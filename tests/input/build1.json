@@ -1,0 +1,126 @@
+{
+  "layer_strategies": {
+    "jump_safe": [],
+    "spatter_safe": [],
+    "melt": [
+      {
+        "pattern": {
+          "point_distance": 1,
+          "type": "square",
+          "offset": 0.0,
+          "start_rotation": 0.0,
+          "layer_rotation": 0.0
+        },
+        "strategy": "LineSnake",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "speed": 100000,
+        "repetitions": 1,
+        "settings": {},
+        "backscatter": false,
+        "geometry": [
+          0,
+          1
+        ]
+      },
+      {
+        "pattern": {
+          "point_distance": 1,
+          "type": "square",
+          "offset": 0.0,
+          "start_rotation": 0.0,
+          "layer_rotation": 0.0
+        },
+        "strategy": "LineSnake",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "speed": 100000,
+        "repetitions": 1,
+        "settings": {},
+        "backscatter": false,
+        "geometry": [
+          0,
+          1
+        ]
+      }
+    ],
+    "heat_balance": [],
+    "layer_feed": []
+  },
+  "layer_default": {
+    "jump_safe": {
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1,
+            "type": "square",
+            "offset": 0.0,
+            "start_rotation": 0.0,
+            "layer_rotation": 0.0
+          },
+          "strategy": "LineSnake",
+          "power": 660,
+          "spot_size": 150,
+          "dwell_time": 10000,
+          "speed": 100000,
+          "repetitions": 1,
+          "settings": {},
+          "backscatter": false,
+          "geometry": [
+            0,
+            1
+          ]
+        }
+      ],
+      "shape": "circle",
+      "size": 50.0
+    },
+    "spatter_safe": null,
+    "melt": null,
+    "heat_balance": null,
+    "layer_feed": {
+      "build_piston_distance": -0.1,
+      "powder_piston_distance": 0.2,
+      "recoater_advance_speed": 100.0,
+      "recoater_retract_speed": 100.0,
+      "recoater_dwell_time": 0,
+      "recoater_full_repeats": 0,
+      "recoater_build_repeats": 0,
+      "triggered_start": true
+    }
+  },
+  "start_heat": {
+    "shape": {
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1,
+            "type": "square",
+            "offset": 0.0,
+            "start_rotation": 0.0,
+            "layer_rotation": 0.0
+          },
+          "strategy": "LineSnake",
+          "power": 660,
+          "spot_size": 150,
+          "dwell_time": 10000,
+          "speed": 100000,
+          "repetitions": 1,
+          "settings": {},
+          "backscatter": false,
+          "geometry": [
+            0,
+            1
+          ]
+        }
+      ],
+      "shape": "circle",
+      "size": 50.0
+    },
+    "temp_sensor": "Sensor1",
+    "target_temp": 800,
+    "timeout": 3600
+  }
+}

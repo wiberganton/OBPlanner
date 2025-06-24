@@ -1,0 +1,14 @@
+from dataclasses import dataclass, field, asdict
+from typing import Tuple, Literal, Optional
+import json
+from obplanner.model.layer_default import LayerDefault, LayerStrategies, StartHeat
+
+@dataclass
+class Build:
+    layer_strategies: LayerStrategies
+    layer_default: LayerDefault = field(default_factory=LayerDefault)
+    start_heat: Optional[StartHeat] = None
+
+    def write_to_json(self, path):
+        with open(path, "w") as f:
+            json.dump(asdict(self), f, indent=2)

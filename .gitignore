@@ -1,0 +1,22 @@
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore build directories
+build/
+dist/
+
+# Ignore log files
+logs/
+
+# Ignore egg-info files
+*.egg-info/
+
+# Ignore virtual environment folder
+venv/
+
+# Other
+idea/
+tests/test_output/
