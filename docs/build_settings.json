@@ -1,0 +1,157 @@
+{
+  "start_heat": {
+    "shape": {
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1
+          },
+          "strategy": "LineSort",
+          "power": 720,
+          "spot_size": 1000,
+          "speed": 100000,
+          "settings": {"start":10, "jump": 10}
+        }
+      ]
+    },
+    "temp_sensor": "Sensor1",
+    "target_temp": 800,
+    "timeout": 3600
+  },
+  "layer_default": {
+    "jump_safe": {
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1
+          },
+          "strategy": "LineSort",
+          "power": 720,
+          "spot_size": 1000,
+          "speed": 100000,
+          "repetitions": 10,
+          "settings": {"jump": 10}
+        }
+      ]
+    },
+    "heat_balance": {
+      "strategies": [
+          {
+            "pattern": {
+              "point_distance": 1,
+              "type": "contour"
+            },
+            "strategy": "ContourLine",
+            "power": 1,
+            "spot_size": 1000,
+            "speed": 100000,
+            "repetitions": 10
+          }
+        ]
+    },
+    "layer_feed": {
+      "build_piston_distance": -0.075,
+      "powder_piston_distance": 0.15,
+      "recoater_advance_speed": 100.0,
+      "recoater_retract_speed": 100.0,
+      "recoater_dwell_time": 0,
+      "recoater_full_repeats": 0,
+      "recoater_build_repeats": 0,
+      "triggered_start": true
+    }
+  },
+  "layer_strategies": {
+    "melt": [
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [0]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [1]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [2]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [3]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [4]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [5]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [6]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [7]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.12
+        },
+        "strategy": "SpotRandom",
+        "power": 660,
+        "spot_size": 150,
+        "dwell_time": 10000,
+        "geometry": [8]
+      }
+    ]
+  }
+}
