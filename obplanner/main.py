@@ -40,7 +40,7 @@ def prepare_build(build_input: Build, sliced_model, path):
         path = prepare_single_obp(build_input.layer_default.melt, obf_path, "melt")
         build_info["layerDefaults"]["melt"] = path
     if build_input.layer_default.heat_balance is not None:
-        path = prepare_single_obp(build_input.layer_default.melt, obf_path, "balance")
+        path = prepare_single_obp(build_input.layer_default.heat_balance, obf_path, "balance")
         build_info["layerDefaults"]["heatBalance"] = path
     # Create layer_strategies
     obp_directory = obf_path + r"/obp"
@@ -80,6 +80,7 @@ def prepare_layer_obp(strategy: Strategy, sliced_model, obp_directory, layer, st
     compensated_patter = pattern_compensator.compensate_pattern(pattern, {}, sliced_model, layer)
     # create obp elements
     obp_elements = generate_strategy.create_obp_elements(compensated_patter, strategy)
+    #print("obp_elements", obp_elements)
     # export obp file
     obp_path = f"{obp_directory}/layer{layer}{type}{strat_numb}.obp"
     obp.write_obp(obp_elements, obp_path)

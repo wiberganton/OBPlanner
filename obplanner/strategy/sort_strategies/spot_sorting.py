@@ -29,7 +29,8 @@ def SpotOrdered(pattern: PatternData, strategy: Strategy):
             subgrid = pattern.grid[xi::x_jump, yi::y_jump]
             # Now process all elements in subgrid at once or with a simple loop
             for element in subgrid.ravel():  # Flatten if needed
-                points.append(obp.Point(element["x"]*1000, element["y"]*1000))
-                dwell_time.append(int(strategy.dwell_time*element["energy"]))
+                if element["energy"] > 0:
+                    points.append(obp.Point(element["x"]*1000, element["y"]*1000))
+                    dwell_time.append(int(strategy.dwell_time*element["energy"]))
     bp = obp.Beamparameters(strategy.spot_size, strategy.power)
     return [obp.TimedPoints(points, dwell_time, bp)]

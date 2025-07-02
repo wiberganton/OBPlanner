@@ -22,6 +22,9 @@ class Layerfeed:
             snake_to_camel(k): v for k, v in asdict(self).items()
         }
         return {"layerFeed": camel_dict}
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(**data)
 
 @dataclass 
 class LayerStrategies:
@@ -31,6 +34,19 @@ class LayerStrategies:
     heat_balance: List[Strategy] = field(default_factory=list)
     layer_feed: List[Layerfeed] = field(default_factory=list)
 
+    @classmethod
+    def from_dict(cls, data: dict):
+        def load_list(key, klass):
+            return [klass.from_dict(item) for item in data.get(key, [])]
+
+        return cls(
+            jump_safe=load_list("jump_safe", Strategy),
+            spatter_safe=load_list("spatter_safe", Strategy),
+            melt=load_list("melt", Strategy),
+            heat_balance=load_list("heat_balance", Strategy),
+            layer_feed=load_list("layer_feed", Layerfeed)
+        )
+
 @dataclass 
 class LayerDefault:
     jump_safe: Optional[SingleShape] = None
@@ -39,9 +55,28 @@ class LayerDefault:
     heat_balance: Optional[SingleShape] = None
     layer_feed: Layerfeed = field(default_factory=Layerfeed)
 
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            jump_safe=SingleShape.from_dict(data["jump_safe"]) if data.get("jump_safe") else None,
+            spatter_safe=SingleShape.from_dict(data["spatter_safe"]) if data.get("spatter_safe") else None,
+            melt=SingleShape.from_dict(data["melt"]) if data.get("melt") else None,
+            heat_balance=SingleShape.from_dict(data["heat_balance"]) if data.get("heat_balance") else None,
+            layer_feed=Layerfeed.from_dict(data["layer_feed"]) if data.get("layer_feed") else Layerfeed()
+        )
+
 @dataclass 
 class StartHeat:
     shape: Optional[SingleShape] = None
     temp_sensor: str = "Sensor1"
     target_temp: int = 800
     timeout: int = 3600
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            shape=SingleShape.from_dict(data["shape"]) if data.get("shape") else None,
+            temp_sensor=data.get("temp_sensor", "Sensor1"),
+            target_temp=data.get("target_temp", 800),
+            timeout=data.get("timeout", 3600)
+        )

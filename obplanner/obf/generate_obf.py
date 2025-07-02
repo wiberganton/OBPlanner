@@ -34,3 +34,8 @@ def generate_other_files(base_folder):
     source_path = r"obplanner\obf\helpers\build.lua"
     destination_path = f"{base_folder}/buildProcessors/lua/build.lua"
     shutil.copy(source_path, destination_path)
+    # obpviewer
+    # lua
+    source_path = r"obplanner\obf\helpers\obpviewer.py"
+    destination_path = f"{base_folder}/obp/obpviewer.py"
+    shutil.copy(source_path, destination_path)

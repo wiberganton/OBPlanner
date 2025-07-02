@@ -19,4 +19,5 @@ venv/
 
 # Other
 idea/
-tests/test_output/
+tests/output/
+examples/

@@ -11,7 +11,7 @@
           "start_rotation": 0.0,
           "layer_rotation": 0.0
         },
-        "strategy": "LineSnake",
+        "strategy": "LineConcentric",
         "power": 660,
         "spot_size": 150,
         "dwell_time": 10000,
@@ -32,7 +32,7 @@
           "start_rotation": 0.0,
           "layer_rotation": 0.0
         },
-        "strategy": "LineSnake",
+        "strategy": "LineConcentric",
         "power": 660,
         "spot_size": 150,
         "dwell_time": 10000,
@@ -60,7 +60,7 @@
             "start_rotation": 0.0,
             "layer_rotation": 0.0
           },
-          "strategy": "LineSnake",
+          "strategy": "LineConcentric",
           "power": 660,
           "spot_size": 150,
           "dwell_time": 10000,
@@ -102,7 +102,7 @@
             "start_rotation": 0.0,
             "layer_rotation": 0.0
           },
-          "strategy": "LineSnake",
+          "strategy": "LineConcentric",
           "power": 660,
           "spot_size": 150,
           "dwell_time": 10000,

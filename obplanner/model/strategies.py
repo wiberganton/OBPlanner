@@ -16,3 +16,8 @@ class Strategy:
     settings: dict = field(default_factory=dict) #Dictionary with custom settings depent on which strategy that is used defined in docs/scanning_strategies.md
     backscatter: bool = False
     geometry: List[int] = field(default_factory=list)  # Which slicestacks in the 3mf files which should be used
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        pattern = PatternSettings(**data["pattern"])
+        return cls(**{**data, "pattern": pattern})

@@ -13,7 +13,6 @@ license = { text = "MIT" }
 dependencies = [
     "obplib",
     "py3mf_slicer",
-    "pydantic",
     "numpy",
     "pyvista",
     "shapely",

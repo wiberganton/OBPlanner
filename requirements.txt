@@ -1,0 +1,10 @@
+obplib
+py3mf_slicer
+matplotlib
+numpy
+scikit-image
+scipy
+pyvista
+shapely
+rasterio
+opencv-python
