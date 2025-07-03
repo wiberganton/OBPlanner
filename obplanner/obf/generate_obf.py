@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import json
 import shutil
+from importlib.resources import files
 
 
 def generate_obf_directories(folder_path, name=""):
@@ -18,24 +19,25 @@ def generate_obf_directories(folder_path, name=""):
     return path
 
 def generate_other_files(base_folder):
-    # build processor
-    source_path = r"obplanner\obf\helpers\buildProcessors.json"
-    destination_path = f"{base_folder}/buildProcessors.json"
-    shutil.copy(source_path, destination_path)
-    # depenedencies
-    source_path = r"obplanner\obf\helpers\dependencies.json"
-    destination_path = f"{base_folder}/dependencies.json"
-    shutil.copy(source_path, destination_path)
-    # manifest
-    source_path = r"obplanner\obf\helpers\manifest.json"
-    destination_path = f"{base_folder}/manifest.json"
-    shutil.copy(source_path, destination_path)
-    # lua
-    source_path = r"obplanner\obf\helpers\build.lua"
-    destination_path = f"{base_folder}/buildProcessors/lua/build.lua"
-    shutil.copy(source_path, destination_path)
-    # obpviewer
-    # lua
-    source_path = r"obplanner\obf\helpers\obpviewer.py"
-    destination_path = f"{base_folder}/obp/obpviewer.py"
-    shutil.copy(source_path, destination_path)
+    """
+    Copy helper files from the obplanner package to a target base folder.
+    This works from installed packages or source.
+    """
+    file_map = {
+        "buildProcessors.json": "buildProcessors.json",
+        "dependencies.json": "dependencies.json",
+        "manifest.json": "manifest.json",
+        "build.lua": os.path.join("buildProcessors", "lua", "build.lua"),
+        "obpviewer.py": os.path.join("obp", "obpviewer.py"),
+    }
+
+    for src_filename, relative_dest in file_map.items():
+        source = files("obplanner.obf.helpers").joinpath(src_filename)
+        destination = os.path.join(base_folder, relative_dest)
+
+        # Ensure destination directories exist
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
+
+        # Copy the file
+        with source.open("rb") as fsrc, open(destination, "wb") as fdst:
+            shutil.copyfileobj(fsrc, fdst)

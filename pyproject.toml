@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OBPlanner"
-version = "0.0.1"
+version = "0.0.2"
 authors = [{ name = "Anton Wiberg", email = "wiberg.anton@gmail.com" }]
 description = "A path planning tool for Open Beam Path (OBP) files."
 readme = "README.md"
@@ -19,8 +19,17 @@ dependencies = [
     "rasterio",
     "scipy",
     "opencv-python",
-    "tqdm"
+    "tqdm",
+    "matplotlib",
+    "pytest",
+    "scikit-image",
 ]
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+# Adjust this to match your actual package structure
+"obplanner.obf.helpers" = ["*.json", "*.lua", "*.py"]
 
 [project.urls]
 Homepage = "https://github.com/wiberganton/OBPlanner"
