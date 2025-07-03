@@ -3,7 +3,7 @@ import py3mf_slicer.slice as slice
 import obplib as obp
 import json
 import pyvista as pv
-
+from tqdm import tqdm
 
 from obplanner.obf.generate_obf import generate_obf_directories, generate_other_files
 from obplanner.model.build import Build
@@ -46,7 +46,7 @@ def prepare_build(build_input: Build, sliced_model, path):
     obp_directory = obf_path + r"/obp"
     num_layers = get_number_layers(sliced_model)
     layers = []
-    for i in range(max(num_layers)):
+    for i in tqdm(range(max(num_layers)), desc="Processing layers", unit="layer"):
         layer = {}
         # jump safe
         for ii, strategy in enumerate(build_input.layer_strategies.jump_safe):
@@ -81,6 +81,11 @@ def prepare_layer_obp(strategy: Strategy, sliced_model, obp_directory, layer, st
     # create obp elements
     obp_elements = generate_strategy.create_obp_elements(compensated_patter, strategy)
     #print("obp_elements", obp_elements)
+    # Create backscatter sync points
+    if strategy.backscatter:
+        obp_elements.insert(0, obp.SyncPoint("BseImage", True, 0))
+        obp_elements.insert(0, obp.SyncPoint("BSEGain", True, 0))
+        obp_elements.append(obp.SyncPoint("BseImage", False, 0))
     # export obp file
     obp_path = f"{obp_directory}/layer{layer}{type}{strat_numb}.obp"
     obp.write_obp(obp_elements, obp_path)
@@ -111,6 +116,11 @@ def prepare_single_obp(single_shape: SingleShape, obp_directory: str, type: str)
         pattern = pattern_generator.generate_pattern(sliced_model, 0, [0], strategy.pattern)
         # create obp elements
         obp_elements = generate_strategy.create_obp_elements(pattern, strategy)
+        # Create backscatter sync points
+        if strategy.backscatter:
+            obp_elements.insert(0, obp.SyncPoint("BseImage", True, 0))
+            obp_elements.insert(0, obp.SyncPoint("BSEGain", True, 0))
+            obp_elements.append(obp.SyncPoint("BseImage", False, 0))
         obp_path = f"{obp_directory}/obp/{type}{i}.obp"
         obp.write_obp(obp_elements, obp_path)
         my_list.append({"file": f"obp/{type}{i}.obp", "repetitions": strategy.repetitions})

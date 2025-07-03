@@ -19,6 +19,7 @@ dependencies = [
     "rasterio",
     "scipy",
     "opencv-python",
+    "tqdm"
 ]
 
 [project.urls]
