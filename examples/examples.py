@@ -5,7 +5,7 @@ from obplanner.model.layer_default import LayerDefault, LayerStrategies
 from obplanner.model.build import Build
 from os.path import normpath as normalized_path
 
-components = [0, 1]
+components = [0, 1, 2]
 
 my_pattern_settings = pattern.PatternSettings(
     point_distance = 1,
@@ -13,6 +13,7 @@ my_pattern_settings = pattern.PatternSettings(
     offset = 0.0, # Offset distance compared against 3mf file contour
     start_rotation = 0.0, # Rotation angle in degrees for first layer
     layer_rotation = 0.0)  # Rotation angle in degrees between layers)
+    
 
 # Paths to the files used in the test
 geometry1 = normalized_path("tests/geometries/test_geometry1.stl")
@@ -28,7 +29,7 @@ pattern = generator.generate_pattern(sliced_model, 0, components, my_pattern_set
 strategy = Strategy(
     geometry = components,
     pattern = my_pattern_settings, # Which pattern that should be used
-    strategy = "LineSnake", # defining which strategy that is used (the different strategies are defined in docs/scanning_strategies.md)
+    strategy = "LineSort", # defining which strategy that is used (the different strategies are defined in docs/scanning_strategies.md)
     power = 660, # Watt
     spot_size = 150, # in um 
     speed = 100000, # in um/s
