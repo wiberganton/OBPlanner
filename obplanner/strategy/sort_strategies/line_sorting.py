@@ -33,8 +33,6 @@ def LineSort(pattern: PatternData, strategy: Strategy):
                 a = obp.Point(el[0]["x"] * 1000, el[0]["y"] * 1000)
                 b = obp.Point(el[-1]["x"] * 1000, el[-1]["y"] * 1000)
                 speed = strategy.speed * el[0]["energy"]
-                print("speed", strategy.speed)
-                print("energy", el[0]["energy"])
                 objects.append(obp.Line(a, b, int(speed), bp))
     return objects
     
@@ -85,9 +83,7 @@ def LineConcentric(pattern: PatternData, strategy: Strategy):
     direction = strategy.settings.get("direction", "inward")
     bp = obp.Beamparameters(strategy.spot_size, strategy.power)
     objects = []
-    print("offset Start")
     offset_contour = offset_pattern.offset_all(pattern, 0.35)
-    print("offset end")
     if direction == "inward":
         for contour in offset_contour:
             for c in contour:
