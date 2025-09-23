@@ -33,29 +33,52 @@ def LineSort(pattern: PatternData, strategy: Strategy):
                 a = obp.Point(el[0]["x"] * 1000, el[0]["y"] * 1000)
                 b = obp.Point(el[-1]["x"] * 1000, el[-1]["y"] * 1000)
                 speed = strategy.speed * el[0]["energy"]
+                print("speed", strategy.speed)
+                print("energy", el[0]["energy"])
                 objects.append(obp.Line(a, b, int(speed), bp))
     return objects
     
 def LineSnake(pattern: PatternData, strategy: Strategy):
+    start = strategy.settings.get("start", 1)
+    jump = strategy.settings.get("jump", 1)
+
     connected = find_connected.find_connections(pattern)
     objects = []
-    for i, row in enumerate(connected):
-        if i % 2 == 0:
+    total_rows = len(connected)
+
+    # Build the row visitation order just like LineSort
+    visited_rows = []
+    for offset in range(jump):
+        for i in range(start - 1 + offset, total_rows, jump):
+            visited_rows.append(i)
+    # Append any rows not yet included (e.g., row 0 when start=2)
+    for i in range(total_rows):
+        if i not in visited_rows:
+            visited_rows.append(i)
+
+    # Process rows in the computed order; alternate direction per processed row
+    for seq_idx, row_idx in enumerate(visited_rows):
+        row = connected[row_idx]
+        if seq_idx % 2 == 0:
+            # forward
             for el in row:
-                if len(el) > 1 and el[0]["energy"]>0:
+                if len(el) > 1 and el[0]["energy"] > 0:
                     bp = obp.Beamparameters(strategy.spot_size, strategy.power)
-                    a = obp.Point(el[0]["x"]*1000, el[0]["y"]*1000)
-                    b = obp.Point(el[-1]["x"]*1000, el[-1]["y"]*1000)
-                    speed = strategy.speed*el[0]["energy"]
-                    objects.append(obp.Line(a,b,int(speed),bp))
+                    a = obp.Point(el[0]["x"] * 1000, el[0]["y"] * 1000)
+                    b = obp.Point(el[-1]["x"] * 1000, el[-1]["y"] * 1000)
+                    speed = strategy.speed * el[0]["energy"]
+                    objects.append(obp.Line(a, b, int(speed), bp))
         else:
+            # reverse
             for el in reversed(row):
-                if len(el) > 1 and el[0]["energy"]>0:
+                if len(el) > 1 and el[0]["energy"] > 0:
                     bp = obp.Beamparameters(strategy.spot_size, strategy.power)
-                    a = obp.Point(el[-1]["x"]*1000, el[0]["y"]*1000)
-                    b = obp.Point(el[0]["x"]*1000, el[-1]["y"]*1000)
-                    speed = strategy.speed*el[0]["energy"]
-                    objects.append(obp.Line(a,b,int(speed),bp))
+                    # Note: reverse the segment endpoints (last -> first)
+                    a = obp.Point(el[-1]["x"] * 1000, el[-1]["y"] * 1000)
+                    b = obp.Point(el[0]["x"] * 1000, el[0]["y"] * 1000)
+                    speed = strategy.speed * el[0]["energy"]
+                    objects.append(obp.Line(a, b, int(speed), bp))
+
     return objects
 
 def LineConcentric(pattern: PatternData, strategy: Strategy):

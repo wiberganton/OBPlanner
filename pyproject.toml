@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OBPlanner"
-version = "0.0.2"
+version = "0.0.3"
 authors = [{ name = "Anton Wiberg", email = "wiberg.anton@gmail.com" }]
 description = "A path planning tool for Open Beam Path (OBP) files."
 readme = "README.md"
@@ -26,6 +26,10 @@ dependencies = [
 ]
 [tool.setuptools]
 include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["obplanner*"]
+exclude = ["tests*", "output*", "docs*", "examples*"]
 
 [tool.setuptools.package-data]
 # Adjust this to match your actual package structure
