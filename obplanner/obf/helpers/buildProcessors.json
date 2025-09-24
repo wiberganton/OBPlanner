@@ -1,6 +1,6 @@
 {
   "default": {
     "type": "lua",
-    "entryPoint": "buildProcessors/default/build.lua"
+    "entryPoint": "buildProcessors/lua/build.lua"
   }
 }

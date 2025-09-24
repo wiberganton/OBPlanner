@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OBPlanner"
-version = "0.0.3"
+version = "0.0.6"
 authors = [{ name = "Anton Wiberg", email = "wiberg.anton@gmail.com" }]
 description = "A path planning tool for Open Beam Path (OBP) files."
 readme = "README.md"

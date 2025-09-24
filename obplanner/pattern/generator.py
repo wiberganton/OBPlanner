@@ -7,7 +7,7 @@ from obplanner.model.pattern import PatternSettings, PatternData
 
 def generate_pattern(sliced_model, layer: int, components: list[int], pattern_settings: PatternSettings) -> PatternData:
     component_slices = py3mf_slicer.get_items.get_shapely_slice(sliced_model, layer)
-    nmb_slices = len(component_slices)
+
     selected_shapes = [component_slices[i] for i in components if component_slices[i] is not None]
     union_polygon = selected_shapes[0]
     for shape in selected_shapes[1:]:
@@ -59,9 +59,7 @@ def generate_pattern(sliced_model, layer: int, components: list[int], pattern_se
             xmin, ymin, xmax, ymax,
             point_distance=pattern_settings.point_distance,
             pattern_type=pattern_settings.type,
-            rotation_deg=rotation,
-            lattice_3d=pattern_settings.lattice_3d,
-            layers=nmb_slices,
+            rotation_deg=rotation
         )
         
         x = pattern.grid['x'].ravel()
@@ -76,6 +74,3 @@ def generate_pattern(sliced_model, layer: int, components: list[int], pattern_se
         pattern.grid['energy'] = inside.reshape(pattern.grid.shape).astype(float)
 
         return pattern
-
-
-
