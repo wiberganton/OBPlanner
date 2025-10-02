@@ -48,9 +48,9 @@ local start_heat = build_info.startHeat
 local temperature_sensor = start_heat.temperatureSensor
 local target_temperature = start_heat.targetTemperature
 
-local spatterSafeDefault = build_info.layerDefaults["spatterSafe"] or {}
-local jumpSafeDefault = build_info.layerDefaults["jumpSafe"] or {}
-local heatBalanceDefault = build_info.layerDefaults["heatBalance"] or {}
+local spatterSafeDefault = build_info.spatterSafe or {}
+local jumpSafeDefault = build_info.jumpSafe or {}
+local heatBalanceDefault = build_info.heatBalance or {}
 local num_layers = #build_info.layers
 local layerfeed = build_info.layerDefaults["layerFeed"] or {}
 
@@ -67,10 +67,15 @@ mqtt.publish("BuildStatus", "Trace", "Layers", {
 mqtt.add_subscription(jump_safe_input)
 mqtt.add_subscription(heat_balance_input)
 
-local jumpreps = (jumpSafeDefault and jumpSafeDefault[1] and jumpSafeDefault[1].repetitions) or 10
-local balancepreps = (heatBalanceDefault and heatBalanceDefault[1] and heatBalanceDefault[1].repetitions) or 10
-mqtt.publish_field("Parameters", "Name", "PreHeatRepetitions", "repetitions", jumpreps)
-mqtt.publish_field("Parameters", "Name", "PostHeatRepetitions", "repetitions", balancepreps)
+mqtt.publish_field(
+	"Parameters",
+	"Name",
+	"PreHeatRepetitions",
+	"repetitions",
+	0
+	-- build_info.layers[1].jumpSafe[1].repetitions
+)
+mqtt.publish_field("Parameters", "Name", "PostHeatRepetitions", "repetitions", 0)
 
 -- ========== START HEAT ==========
 log("Init")
