@@ -21,3 +21,8 @@ venv/
 idea/
 tests/output/
 examples/
+
+*.swo
+*.swp
+*~
+

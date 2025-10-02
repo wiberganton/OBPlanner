@@ -12,7 +12,7 @@
           "layer_rotation": 0.0,
           "lattice_3d": null
         },
-        "strategy": "LineConcentric",
+        "strategy": "LineSort",
         "power": 660,
         "spot_size": 150,
         "dwell_time": 10000,
@@ -22,7 +22,8 @@
         "backscatter": false,
         "geometry": [
           0,
-          1
+          1,
+          2
         ]
       },
       {
@@ -34,7 +35,7 @@
           "layer_rotation": 0.0,
           "lattice_3d": null
         },
-        "strategy": "LineConcentric",
+        "strategy": "LineSort",
         "power": 660,
         "spot_size": 150,
         "dwell_time": 10000,
@@ -44,7 +45,8 @@
         "backscatter": false,
         "geometry": [
           0,
-          1
+          1,
+          2
         ]
       }
     ],
@@ -63,7 +65,7 @@
             "layer_rotation": 0.0,
             "lattice_3d": null
           },
-          "strategy": "LineConcentric",
+          "strategy": "LineSort",
           "power": 660,
           "spot_size": 150,
           "dwell_time": 10000,
@@ -73,7 +75,8 @@
           "backscatter": false,
           "geometry": [
             0,
-            1
+            1,
+            2
           ]
         }
       ],
@@ -106,7 +109,7 @@
             "layer_rotation": 0.0,
             "lattice_3d": null
           },
-          "strategy": "LineConcentric",
+          "strategy": "LineSort",
           "power": 660,
           "spot_size": 150,
           "dwell_time": 10000,
@@ -116,7 +119,8 @@
           "backscatter": false,
           "geometry": [
             0,
-            1
+            1,
+            2
           ]
         }
       ],
