@@ -9,7 +9,8 @@
           "type": "square",
           "offset": 0.0,
           "start_rotation": 0.0,
-          "layer_rotation": 0.0
+          "layer_rotation": 0.0,
+          "lattice_3d": null
         },
         "strategy": "LineConcentric",
         "power": 660,
@@ -30,7 +31,8 @@
           "type": "square",
           "offset": 0.0,
           "start_rotation": 0.0,
-          "layer_rotation": 0.0
+          "layer_rotation": 0.0,
+          "lattice_3d": null
         },
         "strategy": "LineConcentric",
         "power": 660,
@@ -58,7 +60,8 @@
             "type": "square",
             "offset": 0.0,
             "start_rotation": 0.0,
-            "layer_rotation": 0.0
+            "layer_rotation": 0.0,
+            "lattice_3d": null
           },
           "strategy": "LineConcentric",
           "power": 660,
@@ -100,7 +103,8 @@
             "type": "square",
             "offset": 0.0,
             "start_rotation": 0.0,
-            "layer_rotation": 0.0
+            "layer_rotation": 0.0,
+            "lattice_3d": null
           },
           "strategy": "LineConcentric",
           "power": 660,

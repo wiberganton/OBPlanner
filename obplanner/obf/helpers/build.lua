@@ -48,6 +48,7 @@ local start_heat = build_info.startHeat
 local temperature_sensor = start_heat.temperatureSensor
 local target_temperature = start_heat.targetTemperature
 
+local spatterSafeDefault = build_info.spatterSafe or {}
 local jumpSafeDefault = build_info.jumpSafe or {}
 local heatBalanceDefault = build_info.heatBalance or {}
 local num_layers = #build_info.layers
@@ -142,25 +143,27 @@ for index, layer in ipairs(build_info.layers) do
 		local currentJumpSafeReps = mqtt.get_field(jump_safe_input, "repetitions")
 
 		system.print("Jump safe reps to add: " .. currentJumpSafeReps .. "")
+		
+		local activeJumpSafe = layer.jumpSafe or jumpSafeDefault
 
-		if layer.jumpSafe ~= nil then
-			for _, obp in ipairs(layer.jumpSafe) do
-				system.print("Jump Safe reps: " .. obp.repetitions .. "")
-				system.print("Total Jump Safe reps: " .. obp.repetitions + currentJumpSafeReps .. "")
-				table.insert(
-					jumpSafePatterns,
-					{ file = obp.file, repetitions = math.max(0, currentJumpSafeReps + obp.repetitions) }
-				)
-			end
+		for _, obp in ipairs(activeJumpSafe) do
+    			system.print("Jump Safe reps: " .. currentJumpSafeReps .. "")
+    			table.insert(
+        			jumpSafePatterns,
+        			{ file = obp.file, repetitions = math.max(0, currentJumpSafeReps) }
+    			)
 		end
 
 		-- SPATTER SAFE
+		local activeSpatterSafe = layer.spatterSafe or spatterSafeDefault
 
-		if layer.spatterSafe ~= nil then
-			for _, obp in ipairs(layer.spatterSafe) do
-				table.insert(spatterSafePatterns, { file = obp.file, repetitions = obp.repetitions })
-			end
+		for _, obp in ipairs(activeSpatterSafe) do
+    			table.insert(
+        			spatterSafePatterns,
+        			{ file = obp.file, repetitions = math.max(0, obp.repetitions) }
+    			)
 		end
+
 
 		-- MELT
 		if layer.melt ~= nil then
@@ -177,18 +180,18 @@ for index, layer in ipairs(build_info.layers) do
 		-- If the table above is empty, use the layer default instead.
 		-- This is handles the same for both jumpSafe, spatterSafe, and heatBalance.
 
-		local heatBalanceRepetitions = mqtt.get_field(heat_balance_input, "repetitions")
 
+		local heatBalanceRepetitions = mqtt.get_field(heat_balance_input, "repetitions")
 		system.print("Heat balance reps to add: " .. heatBalanceRepetitions .. "")
-		if layer.heatBalance ~= nil then
-			for _, obp in ipairs(layer.heatBalance) do
-				system.print("Base Heat Balance reps: " .. obp.repetitions .. "")
-				system.print("Total Heat Balance reps: " .. obp.repetitions + heatBalanceRepetitions .. "")
-				table.insert(
-					heatBalancePatterns,
-					{ file = obp.file, repetitions = math.max(0, obp.repetitions + heatBalanceRepetitions) }
-				)
-			end
+		
+		local activeHeatBalance = layer.heatBalance or heatBalanceDefault
+
+		for _, obp in ipairs(activeHeatBalance) do
+    			system.print("Heat Balance reps: " .. heatBalanceRepetitions .. "")
+    			table.insert(
+        			heatBalancePatterns,
+        			{ file = obp.file, repetitions = math.max(0, heatBalanceRepetitions) }
+    			)
 		end
 
 		-- EXPOSURE
