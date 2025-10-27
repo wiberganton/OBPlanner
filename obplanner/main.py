@@ -1,4 +1,4 @@
-from py3mf_slicer.get_items import get_number_layers, get_py3mf_from_pyvista
+from py3mf_slicer.get_items import get_number_layers, get_py3mf_from_pyvista, get_pyvista_slices
 import py3mf_slicer.slice as slice
 import obplib as obp
 import json
@@ -12,6 +12,12 @@ from obplanner.model.single_file import SingleShape
 import obplanner.pattern.generator as pattern_generator
 import obplanner.pattern.compensator as pattern_compensator
 import obplanner.strategy.generate_strategy as generate_strategy
+import numpy as np
+
+class SyncState:
+    def __init__(self):
+        self.status = False
+sync = SyncState()
 
 
 def prepare_build(build_input: Build, sliced_model, path):
@@ -44,9 +50,10 @@ def prepare_build(build_input: Build, sliced_model, path):
         build_info["layerDefaults"]["heatBalance"] = path
     # Create layer_strategies
     obp_directory = obf_path + r"/obp"
-    num_layers = get_number_layers(sliced_model)
+    num_layers = get_numb_layers(sliced_model)
+    
     layers = []
-    for i in tqdm(range(max(num_layers)), desc="Processing layers", unit="layer"):
+    for i in tqdm(range(num_layers), desc="Processing layers", unit="layer"):
         layer = {}
         # jump safe
         for ii, strategy in enumerate(build_input.layer_strategies.jump_safe):
@@ -62,7 +69,7 @@ def prepare_build(build_input: Build, sliced_model, path):
             layer.setdefault("melt", []).append({"file": path, "repetitions": strategy.repetitions})
         # heat_balance
         for ii, strategy in enumerate(build_input.layer_strategies.heat_balance):
-            path = prepare_layer_obp(strategy, sliced_model, obp_directory, i, ii, "melt")
+            path = prepare_layer_obp(strategy, sliced_model, obp_directory, i, ii, "balance")
             layer.setdefault("heatBalance", []).append({"file": path, "repetitions": strategy.repetitions})
         layers.append(layer)
     build_info["layers"] = layers
@@ -79,13 +86,27 @@ def prepare_layer_obp(strategy: Strategy, sliced_model, obp_directory, layer, st
     # compensate pattern
     compensated_patter = pattern_compensator.compensate_pattern(pattern, {}, sliced_model, layer)
     # create obp elements
-    obp_elements = generate_strategy.create_obp_elements(compensated_patter, strategy)
-    #print("obp_elements", obp_elements)
+    if strategy.end_layer == -1:
+        end_layer = layer+10
+    else:
+        end_layer = strategy.end_layer
+    if layer >= strategy.start_layer and layer <= end_layer and layer % strategy.apply_at_each_n_layer == 0:
+        obp_elements = generate_strategy.create_obp_elements(compensated_patter, strategy)
+    else:
+        obp_elements = []
     # Create backscatter sync points
     if strategy.backscatter:
         obp_elements.insert(0, obp.SyncPoint("BseImage", True, 0))
         obp_elements.insert(0, obp.SyncPoint("BSEGain", True, 0))
         obp_elements.append(obp.SyncPoint("BseImage", False, 0))
+    # Create pro-heat sync points
+    if strategy.pro_heat:
+        obp_elements.append(obp.SyncPoint("ExternalSync", True, 0))
+        sync.status = True
+    if sync.status:
+        obp_elements.insert(0, obp.SyncPoint("ExternalSync", False, 0))
+        sync.status = False
+    
     # export obp file
     obp_path = f"{obp_directory}/layer{layer}{type}{strat_numb}.obp"
     obp.write_obp(obp_elements, obp_path)
@@ -121,7 +142,28 @@ def prepare_single_obp(single_shape: SingleShape, obp_directory: str, type: str)
             obp_elements.insert(0, obp.SyncPoint("BseImage", True, 0))
             obp_elements.insert(0, obp.SyncPoint("BSEGain", True, 0))
             obp_elements.append(obp.SyncPoint("BseImage", False, 0))
+        # Create pro-heat sync points
+        if strategy.pro_heat:
+            obp_elements.append(obp.SyncPoint("ExternalSync", True, 0))
+            sync.status = True
+        if sync.status:
+            obp_elements.insert(0, obp.SyncPoint("ExternalSync", False, 0))
+            sync.status = False
         obp_path = f"{obp_directory}/obp/{type}{i}.obp"
         obp.write_obp(obp_elements, obp_path)
         my_list.append({"file": f"obp/{type}{i}.obp", "repetitions": strategy.repetitions})
     return my_list
+
+def get_numb_layers(sliced_model):
+    slices = get_pyvista_slices(sliced_model)
+    z_values = []
+    for mb in slices:
+        for i in range(mb.GetNumberOfBlocks()):  # or len(mb)
+            block = mb.GetBlock(i)
+            if block is None:
+                continue
+            # each block is usually a PolyData or UnstructuredGrid
+            points = block.points  # numpy array of shape (n_points, 3)
+            z_values.extend(points[:, 2])  # take the Z coordinate (index 2)
+    z_values = np.array(z_values)
+    return np.unique(np.round(z_values, 3)).size

@@ -20,4 +20,4 @@ venv/
 # Other
 idea/
 tests/output/
-examples/
+examples/output/

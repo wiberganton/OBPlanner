@@ -9,6 +9,9 @@ def generate_pattern(sliced_model, layer: int, components: list[int], pattern_se
     component_slices = py3mf_slicer.get_items.get_shapely_slice(sliced_model, layer)
 
     selected_shapes = [component_slices[i] for i in components if component_slices[i] is not None]
+    if len(selected_shapes) == 0:
+        return PatternData.create_empty(0, 0, 0, 0, point_distance=pattern_settings.point_distance, pattern_type=pattern_settings.type, rotation_deg=0)
+    
     union_polygon = selected_shapes[0]
     for shape in selected_shapes[1:]:
         union_polygon = union_polygon.union(shape)

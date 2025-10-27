@@ -15,6 +15,10 @@ class Strategy:
     repetitions: int = 1
     settings: dict = field(default_factory=dict) #Dictionary with custom settings depent on which strategy that is used defined in docs/scanning_strategies.md
     backscatter: bool = False
+    pro_heat: bool = False
+    apply_at_each_n_layer: int = 1  # If 0 apply at each layer, else every n layer
+    start_layer: int = 0  # From which layer the strategy should be applied
+    end_layer: int = -1  # Up to which layer the strategy should be applied (-1 means till the end)
     geometry: List[int] = field(default_factory=list)  # Which slicestacks in the 3mf files which should be used
 
     @classmethod
