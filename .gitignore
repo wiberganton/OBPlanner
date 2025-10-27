@@ -21,3 +21,4 @@ venv/
 idea/
 tests/output/
 examples/output/
+output/
