@@ -19,6 +19,28 @@ def generate_pattern(sliced_model, layer: int, components: list[int], pattern_se
     if pattern_settings.offset != 0.0:
         union_polygon = union_polygon.buffer(pattern_settings.offset)
     
+    # 3D rotation
+    if pattern_settings.pattern_3D is not None:
+        pattern = PatternData.create_empty_3D(
+            xmin, ymin, xmax, ymax,
+            pattern_3D=pattern_settings.pattern_3D,
+            layer=layer,
+            start_rotation=pattern_settings.start_rotation,
+            layer_rotation=pattern_settings.layer_rotation,
+        )
+        x = pattern.grid['x'].ravel()
+        y = pattern.grid['y'].ravel()
+
+        if isinstance(union_polygon, MultiPolygon):
+            inside = np.zeros_like(x, dtype=bool)
+            for poly in union_polygon.geoms:
+                inside |= contains_xy(poly, x, y)
+        else:
+            inside = contains_xy(union_polygon, x, y)
+        pattern.grid['energy'] = inside.reshape(pattern.grid.shape).astype(float)
+
+        return pattern
+
     rotation = pattern_settings.start_rotation + pattern_settings.layer_rotation * layer
     if pattern_settings.type == "contour":
         x = []
