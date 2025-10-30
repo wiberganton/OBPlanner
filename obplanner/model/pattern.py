@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Tuple, Literal
+from typing import Tuple, Literal, Optional
 import numpy as np
 
 
@@ -10,6 +10,7 @@ class PatternSettings:
     offset: float = 0.0 # Offset distance compared against 3mf file contour
     start_rotation: float = 0.0 # Rotation angle in degrees for first layer
     layer_rotation: float = 0.0  # Rotation angle in degrees between layers
+    stacking_3D: Optional[Literal["BCC", "FCC", "HEX", "HCP"]] = None #3D stacking algorithm applied
 
 point_dtype = np.dtype([
     ("x", np.float32),

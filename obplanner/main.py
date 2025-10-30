@@ -78,6 +78,9 @@ def prepare_layer_obp(strategy: Strategy, sliced_model, obp_directory, layer, st
     pattern = pattern_generator.generate_pattern(sliced_model, layer, strategy.geometry, strategy.pattern)
     # compensate pattern
     compensated_patter = pattern_compensator.compensate_pattern(pattern, {}, sliced_model, layer)
+    from obplanner.plotters.plot_patter_data import visualize_pattern
+    if layer % 10 == 0:
+        visualize_pattern(compensated_patter)
     # create obp elements
     obp_elements = generate_strategy.create_obp_elements(compensated_patter, strategy)
     #print("obp_elements", obp_elements)
