@@ -18,11 +18,12 @@ def generate_pattern(sliced_model, layer: int, components: list[int], pattern_se
 
     if pattern_settings.offset != 0.0:
         union_polygon = union_polygon.buffer(pattern_settings.offset)
-    
+    xmin, ymin, xmax, ymax = union_polygon.bounds
     # 3D rotation
     if pattern_settings.pattern_3D is not None:
         pattern = PatternData.create_empty_3D(
             xmin, ymin, xmax, ymax,
+            point_distance=pattern_settings.point_distance,
             pattern_3D=pattern_settings.pattern_3D,
             layer=layer,
             start_rotation=pattern_settings.start_rotation,
@@ -38,7 +39,7 @@ def generate_pattern(sliced_model, layer: int, components: list[int], pattern_se
         else:
             inside = contains_xy(union_polygon, x, y)
         pattern.grid['energy'] = inside.reshape(pattern.grid.shape).astype(float)
-
+        
         return pattern
 
     rotation = pattern_settings.start_rotation + pattern_settings.layer_rotation * layer

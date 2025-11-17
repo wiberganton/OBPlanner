@@ -10,7 +10,7 @@ class PatternSettings:
     offset: float = 0.0 # Offset distance compared against 3mf file contour
     start_rotation: float = 0.0 # Rotation angle in degrees for first layer
     layer_rotation: float = 0.0  # Rotation angle in degrees between layers
-    pattern_3D: Optional[Literal["HCP"]] = None # Applies a 3D pattern if specified
+    pattern_3D: Optional[Literal["hcp", "fcc"]] = None # Applies a 3D pattern if specified
 
 point_dtype = np.dtype([
     ("x", np.float32),

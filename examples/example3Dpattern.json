@@ -1,0 +1,77 @@
+{
+  "start_heat": {
+    "shape": {
+      "size": 45,
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1
+          },
+          "strategy": "LineSort",
+          "power": 900,
+          "spot_size": 1000,
+          "speed": 3500000,
+          "settings": {"jump": 10}
+        }
+      ]
+    },
+    "temp_sensor": "Sensor3",
+    "target_temp": 300,
+    "timeout": 3600
+  },
+  "layer_default": {
+    "layer_feed": {
+      "build_piston_distance": -0.07,
+      "powder_piston_distance": 0.14,
+      "recoater_advance_speed": 100.0,
+      "recoater_retract_speed": 100.0,
+      "recoater_dwell_time": 0,
+      "recoater_full_repeats": 0,
+      "recoater_build_repeats": 0,
+      "triggered_start": true
+    }
+  },
+  
+  "layer_strategies": {
+    "melt": [
+      {
+        "pattern": {
+          "point_distance": 0.120,
+          "pattern_3D": "hcp",
+          "start_rotation": 0
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 350000,
+        "geometry": [0]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.120,
+          "pattern_3D": "fcc",
+          "start_rotation": 0
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 350000,
+        "geometry": [1]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.120,
+          "type": "triangular",
+          "start_rotation": 45,
+          "layer_rotation": 90
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 350000,
+        "geometry": [2]
+      }
+      
+    ]
+  }
+}
