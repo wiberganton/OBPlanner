@@ -11,6 +11,8 @@ class PatternSettings:
     start_rotation: float = 0.0 # Rotation angle in degrees for first layer
     layer_rotation: float = 0.0  # Rotation angle in degrees between layers
     pattern_3D: Optional[Literal["hcp", "fcc"]] = None # Applies a 3D pattern if specified
+    pattern_settings: dict = field(default_factory=dict)  # Additional settings specific to pattern type
+    
 
 point_dtype = np.dtype([
     ("x", np.float32),

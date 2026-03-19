@@ -84,7 +84,7 @@ def prepare_layer_obp(strategy: Strategy, sliced_model, obp_directory, layer, st
     # create pattern
     pattern = pattern_generator.generate_pattern(sliced_model, layer, strategy.geometry, strategy.pattern)
     # compensate pattern
-    compensated_patter = pattern_compensator.compensate_pattern(pattern, {}, sliced_model, layer)
+    compensated_patter = pattern_compensator.compensate_pattern(pattern, strategy.pattern.pattern_settings, sliced_model, layer)
     # create obp elements
     if strategy.end_layer == -1:
         end_layer = layer+10
@@ -144,12 +144,16 @@ def prepare_single_obp(single_shape: SingleShape, obp_directory: str, type: str)
             obp_elements.append(obp.SyncPoint("BseImage", False, 0))
         # Create pro-heat sync points
         if strategy.pro_heat:
+            print("Proheat sync point added (True)") # ------------------------------------- remove after testing
             obp_elements.append(obp.SyncPoint("ExternalSync", True, 0))
             sync.status = True
         if sync.status:
+            print("Proheat sync point added (False)") # ------------------------------------- remove after testing
             obp_elements.insert(0, obp.SyncPoint("ExternalSync", False, 0))
             sync.status = False
+            print(obp_elements)
         obp_path = f"{obp_directory}/obp/{type}{i}.obp"
+        print(f"Writing OBP file: {obp_path} with elements.") # ------------------------------------- remove after testing
         obp.write_obp(obp_elements, obp_path)
         my_list.append({"file": f"obp/{type}{i}.obp", "repetitions": strategy.repetitions})
     return my_list

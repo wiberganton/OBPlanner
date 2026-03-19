@@ -1,0 +1,201 @@
+{
+  "start_heat": {
+    "shape": {
+      "size": 45,
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1
+          },
+          "strategy": "LineSort",
+          "power": 900,
+          "spot_size": 1000,
+          "speed": 3500000,
+          "settings": {"jump": 10}
+        }
+      ]
+    },
+    "temp_sensor": "Sensor1",
+    "target_temp": 800,
+    "timeout": 3600
+  },
+  "layer_default": {
+    "jump_safe": {
+      "size": 45,
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1
+          },
+          "strategy": "LineSort",
+          "power": 810,
+          "spot_size": 1000,
+          "speed": 10000000,
+          "repetitions": 10,
+          "settings": {"jump": 20},
+          "pro_heat": true
+        }
+      ]
+    },
+    "heat_balance": {
+      "size": 45,
+      "strategies": [
+        {
+          "pattern": {
+            "point_distance": 1
+          },
+          "strategy": "LineSort",
+          "power": 0,
+          "spot_size": 1000,
+          "speed": 5000000,
+          "repetitions": 5,
+          "settings": {"jump": 20}
+        }
+      ]
+    },
+    "layer_feed": {
+      "build_piston_distance": -0.07,
+      "powder_piston_distance": 0.14,
+      "recoater_advance_speed": 100.0,
+      "recoater_retract_speed": 100.0,
+      "recoater_dwell_time": 0,
+      "recoater_full_repeats": 0,
+      "recoater_build_repeats": 0,
+      "triggered_start": true
+    }
+  },
+  
+  "layer_strategies": {
+    "melt": [
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"edge_compensation": true,
+                                "edge_energy": 0.5,
+                                "edge_compensation_width": 2
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [0]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"edge_compensation": true,
+                                "edge_energy": 0.6,
+                                "edge_compensation_width": 2
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [1]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"edge_compensation": true,
+                                "edge_energy": 0.7,
+                                "edge_compensation_width": 2
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [2]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"edge_compensation": true,
+                                "edge_energy": 0.8,
+                                "edge_compensation_width": 2
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [3]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular"
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [4]
+      },
+
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"overhang_compensation": true,
+                                "overhang_edge_energy": 0.5
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [5]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"overhang_compensation": true,
+                                "overhang_edge_energy": 0.6
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [6]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"overhang_compensation": true,
+                                "overhang_edge_energy": 0.7
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [7]
+      },
+      {
+        "pattern": {
+          "point_distance": 0.25,
+          "type": "triangular",
+          "pattern_settings": {"overhang_compensation": true,
+                                "overhang_edge_energy": 0.8
+                              }
+        },
+        "strategy": "SpotRandom",
+        "power": 700,
+        "spot_size": 100,
+        "dwell_time": 500000,
+        "geometry": [8]
+      }
+
+    ]
+  }
+}

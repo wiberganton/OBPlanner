@@ -43,6 +43,108 @@ function logfatal(message)
 	error(message)
 end
 
+function run_heat_balance_until_target(activeHeatBalance, layer_index, layerfeed)
+	if activeHeatBalance == nil or #activeHeatBalance == 0 then
+		log("No heat balance patterns for layer " .. layer_index)
+		return
+	end
+
+	-- You can make this fixed, or read it from MQTT / build_info
+	local post_heat_timeout = 60
+	local max_heat_cycles = 100
+
+	-- Optional: allow override from MQTT if you want
+	-- local timeout_from_mqtt = mqtt.get_field(heat_balance_input, "seconds")
+	-- if timeout_from_mqtt ~= nil and timeout_from_mqtt > 0 then
+	-- 	post_heat_timeout = timeout_from_mqtt
+	-- end
+
+	local deadline = os.time() + post_heat_timeout
+	local cycle = 0
+
+	log(string.format(
+		"Starting post-heat for layer %d until sensor '%s' reaches %.2f",
+		layer_index,
+		tostring(temperature_sensor),
+		target_temperature
+	))
+
+	while true do
+		local temperature = machine.get_temperature(temperature_sensor)
+
+		if temperature ~= nil and temperature >= target_temperature then
+			log(string.format(
+				"Post-heat complete for layer %d. Temperature %.2f reached target %.2f",
+				layer_index,
+				temperature,
+				target_temperature
+			))
+			return
+		end
+
+		if os.time() >= deadline then
+			logfatal(string.format(
+				"Post-heat timeout on layer %d. Failed to reach target temperature %.2f",
+				layer_index,
+				target_temperature
+			))
+		end
+
+		cycle = cycle + 1
+		if cycle > max_heat_cycles then
+			logfatal(string.format(
+				"Post-heat exceeded max cycles on layer %d",
+				layer_index
+			))
+		end
+
+		if not machine.beam_is_on() then
+			log("Beam was off before post-heat. Turning it on.")
+			if not machine.restartHV(60) then
+				logfatal("Failed to restart beam before post-heat")
+			end
+		end
+
+		log(string.format(
+			"Post-heat cycle %d on layer %d. Current temperature: %s",
+			cycle,
+			layer_index,
+			tostring(temperature)
+		))
+
+		-- Build one single heat-balance pass
+		-- local heatBalancePatterns = {}
+		for _, obp in ipairs(activeHeatBalance) do
+			table.insert(heatBalancePatterns, {
+				file = obp.file,
+				repetitions = 1
+			})
+		end
+
+		local err_id = machine.start_process_step_exposures(
+			{}, -- jumpSafe
+			{}, -- spatterSafe
+			{}, -- melt
+			{}
+		)
+
+		if err_id ~= 0 then
+			local newPowderLayer = false
+			machine.clear_exposure_queue()
+
+			if err_id == 4 then
+				log("Arc trip during post-heat exposure")
+			else
+				log("Unexpected error during post-heat, err_id = " .. tostring(err_id))
+			end
+
+			if not machine.restart_after_arc_trip(newPowderLayer, 60, layerfeed) then
+				logfatal("Unable to recover from post-heat arc trip")
+			end
+		end
+	end
+end
+
 local build_info = obf.get_build_info()
 local start_heat = build_info.startHeat
 local temperature_sensor = start_heat.temperatureSensor
@@ -64,12 +166,12 @@ mqtt.publish("BuildStatus", "Trace", "Layers", {
 })
 
 mqtt.add_subscription(jump_safe_input)
-mqtt.add_subscription(heat_balance_input)
+-- mqtt.add_subscription(heat_balance_input)
 
 local jumpreps = (jumpSafeDefault and jumpSafeDefault[1] and jumpSafeDefault[1].repetitions) or 10
 local balancepreps = (heatBalanceDefault and heatBalanceDefault[1] and heatBalanceDefault[1].repetitions) or 10
 mqtt.publish_field("Parameters", "Name", "PreHeatRepetitions", "repetitions", jumpreps)
-mqtt.publish_field("Parameters", "Name", "PostHeatRepetitions", "repetitions", balancepreps)
+--mqtt.publish_field("Parameters", "Name", "PostHeatRepetitions", "repetitions", balancepreps)
 
 -- ========== START HEAT ==========
 log("Init")
@@ -167,14 +269,7 @@ for index, layer in ipairs(build_info.layers) do
 		end
 
 		-- HEAT BALANCE
-		-- Use the mqtt-value as an offset to the layer's reps
-
-		-- Check if layer specific heat balance exists, if not, add an empty table
-
-		-- If the table above is empty, use the layer default instead.
-		-- This is handles the same for both jumpSafe, spatterSafe, and heatBalance.
-
-
+		-- Loops heatBalance until target temperature is reached, so we just do 1 repetition per loop and check temperature in between
 		local heatBalanceRepetitions = mqtt.get_field(heat_balance_input, "repetitions")
 		system.print("Heat balance reps to add: " .. heatBalanceRepetitions .. "")
 		
@@ -197,6 +292,8 @@ for index, layer in ipairs(build_info.layers) do
 			heatBalancePatterns
 		)
 		if err_id == 0 then
+			local activeHeatBalance = layer.heatBalance or heatBalanceDefault
+			run_heat_balance_until_target(activeHeatBalance, index, layerfeed)
 			layerDone = true
 		elseif err_id == 1 then
 			log("Arc trip during Jump Safe exposure")
