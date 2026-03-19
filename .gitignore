@@ -21,5 +21,12 @@ venv/
 idea/
 tests/output/
 examples/output/
+examples/build_20251219/
+examples/build_20260119/
+examples/overhang/
+examples/tests/
+examples/wiggle/wiggle_hossein/
 output/
 paper_code/
+
+
