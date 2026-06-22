@@ -94,29 +94,7 @@ def randomize_angular_offset(points):
 # ----------------------------------------------------------
 # FUNCTION: Generate Concentric Rings
 # ----------------------------------------------------------
-def _resolve_ring_num_points(radius_um, num_points=None, arc_spacing_um=None):
-    """
-    Resolve how many points to place on a ring.
-    Prefer an explicit num_points value; otherwise estimate from arc spacing.
-    """
-    if num_points is not None:
-        return max(1, int(num_points))
-
-    if arc_spacing_um is None or arc_spacing_um <= 0:
-        raise ValueError("Either num_points or a positive arc_spacing_um must be provided.")
-
-    circumference = 2 * math.pi * radius_um
-    return max(1, int(circumference / arc_spacing_um))
-
-
-def generate_concentric_rings(
-    num_rings,
-    ring_spacing_um,
-    arc_spacing_um=None,
-    dwell_time_ns=None,
-    direction="ccw",
-    num_points=None,
-):
+def generate_concentric_rings(num_rings, ring_spacing_um, num_points, dwell_time_ns, direction):
     """
     Generate multiple concentric rings. Returns combined lists of Points and dwell times.
       - num_rings: number of rings
@@ -124,24 +102,20 @@ def generate_concentric_rings(
       - arc_spacing_um: spacing along circumference
       - dwell_time_ns: dwell time per pattern point (wiggle dwell time)
       - direction: "ccw", "cw", or "alternate"
-      - num_points: explicit number of points per ring
     """
     all_pts = []
     all_dts = []
     for i in range(num_rings):
         radius = (i + 1) * ring_spacing_um
-        ring_num_points = _resolve_ring_num_points(
-            radius, num_points=num_points, arc_spacing_um=arc_spacing_um
-        )
         if direction == "ccw":
-            pts, dts = generate_ring_points_ccw(radius, ring_num_points, dwell_time_ns)
+            pts, dts = generate_ring_points_ccw(radius, num_points, dwell_time_ns) #fix here
         elif direction == "cw":
-            pts, dts = generate_ring_points_cw(radius, ring_num_points, dwell_time_ns)
+            pts, dts = generate_ring_points_cw(radius, num_points, dwell_time_ns)
         elif direction == "alternate":
             if i % 2 == 0:
-                pts, dts = generate_ring_points_ccw(radius, ring_num_points, dwell_time_ns)
+                pts, dts = generate_ring_points_ccw(radius, num_points, dwell_time_ns)
             else:
-                pts, dts = generate_ring_points_cw(radius, ring_num_points, dwell_time_ns)
+                pts, dts = generate_ring_points_cw(radius, num_points, dwell_time_ns)
         else:
             raise ValueError("Direction must be 'ccw', 'cw', or 'alternate'.")
         pts = randomize_angular_offset(pts)
@@ -152,16 +126,12 @@ def generate_concentric_rings(
 # ----------------------------------------------------------
 # FUNCTION: Generate Zigzag (Opposite-Ordered) Jump Pattern
 # ----------------------------------------------------------
-def generate_zigzag_pattern(num_rings, ring_spacing_um, arc_spacing_um, dwell_time_ns, direction):
+def generate_zigzag_pattern(num_rings, ring_spacing_um, num_points, dwell_time_ns, direction):
     """
     Generate concentric rings then reorder points to jump across diametrically opposite points.
     """
     ring_pts, _ = generate_concentric_rings(
-        num_rings=num_rings,
-        ring_spacing_um=ring_spacing_um,
-        arc_spacing_um=arc_spacing_um,
-        dwell_time_ns=dwell_time_ns,
-        direction=direction,
+        num_rings, ring_spacing_um, num_points, dwell_time_ns, direction
     )
     return generate_opposite_ordered_points(ring_pts, dwell_time_ns)
 
