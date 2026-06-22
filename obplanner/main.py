@@ -20,13 +20,13 @@ class SyncState:
 sync = SyncState()
 
 
-def prepare_build(build_input: Build, sliced_model, path):
+def prepare_build(build_input: Build, sliced_model, path, verbose=False):
     build_info = {}
     # Create build path
-    obf_path = generate_obf_directories(path)
+    obf_path = generate_obf_directories(path, verbose=verbose)
     # Create start_heat
     if build_input.start_heat is not None:
-        path = prepare_single_obp(build_input.start_heat.shape, obf_path, "start_heat")
+        path = prepare_single_obp(build_input.start_heat.shape, obf_path, "start_heat", verbose=verbose)
         build_info["startHeat"] = {
             "file": path[0]["file"],
             "temperatureSensor": build_input.start_heat.temp_sensor,
@@ -37,16 +37,16 @@ def prepare_build(build_input: Build, sliced_model, path):
     # Create layer_defaults
     build_info["layerDefaults"] = build_input.layer_default.layer_feed.to_camel_dict()
     if build_input.layer_default.jump_safe is not None:
-        path = prepare_single_obp(build_input.layer_default.jump_safe, obf_path, "jump")
+        path = prepare_single_obp(build_input.layer_default.jump_safe, obf_path, "jump", verbose=verbose)
         build_info["layerDefaults"]["jumpSafe"] = path
     if build_input.layer_default.spatter_safe is not None:
-        path = prepare_single_obp(build_input.layer_default.spatter_safe, obf_path, "spatter")
+        path = prepare_single_obp(build_input.layer_default.spatter_safe, obf_path, "spatter", verbose=verbose)
         build_info["layerDefaults"]["spatterSafe"] = path
     if build_input.layer_default.melt is not None:
-        path = prepare_single_obp(build_input.layer_default.melt, obf_path, "melt")
+        path = prepare_single_obp(build_input.layer_default.melt, obf_path, "melt", verbose=verbose)
         build_info["layerDefaults"]["melt"] = path
     if build_input.layer_default.heat_balance is not None:
-        path = prepare_single_obp(build_input.layer_default.heat_balance, obf_path, "balance")
+        path = prepare_single_obp(build_input.layer_default.heat_balance, obf_path, "balance", verbose=verbose)
         build_info["layerDefaults"]["heatBalance"] = path
     # Create layer_strategies
     obp_directory = obf_path + r"/obp"
@@ -113,7 +113,7 @@ def prepare_layer_obp(strategy: Strategy, sliced_model, obp_directory, layer, st
     # return path
     return f"obp/layer{layer}{type}{strat_numb}.obp"
 
-def prepare_single_obp(single_shape: SingleShape, obp_directory: str, type: str):
+def prepare_single_obp(single_shape: SingleShape, obp_directory: str, type: str, verbose=False):
     # create pattern
     if single_shape.shape == "circle":
         mesh = pv.Cylinder(
@@ -144,16 +144,20 @@ def prepare_single_obp(single_shape: SingleShape, obp_directory: str, type: str)
             obp_elements.append(obp.SyncPoint("BseImage", False, 0))
         # Create pro-heat sync points
         if strategy.pro_heat:
-            print("Proheat sync point added (True)") # ------------------------------------- remove after testing
+            if verbose:
+                print("Proheat sync point added (True)")
             obp_elements.append(obp.SyncPoint("ExternalSync", True, 0))
             sync.status = True
         if sync.status:
-            print("Proheat sync point added (False)") # ------------------------------------- remove after testing
+            if verbose:
+                print("Proheat sync point added (False)")
             obp_elements.insert(0, obp.SyncPoint("ExternalSync", False, 0))
             sync.status = False
-            print(obp_elements)
+            if verbose:
+                print(obp_elements)
         obp_path = f"{obp_directory}/obp/{type}{i}.obp"
-        print(f"Writing OBP file: {obp_path} with elements.") # ------------------------------------- remove after testing
+        if verbose:
+            print(f"Writing OBP file: {obp_path} with elements.")
         obp.write_obp(obp_elements, obp_path)
         my_list.append({"file": f"obp/{type}{i}.obp", "repetitions": strategy.repetitions})
     return my_list

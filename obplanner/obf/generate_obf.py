@@ -5,7 +5,7 @@ import shutil
 from importlib.resources import files
 
 
-def generate_obf_directories(folder_path, name=""):
+def generate_obf_directories(folder_path, name="", verbose=False):
     if name == "":
         now = datetime.now()
         name = f"build_{now.year}_{now.month:02}_{now.day:02}_{now.hour:02}_{now.minute:02}_{now.second:02}"
@@ -15,7 +15,8 @@ def generate_obf_directories(folder_path, name=""):
     os.makedirs(f"{path}/buildProcessors")
     os.makedirs(f"{path}/buildProcessors/lua")
     os.makedirs(f"{path}/obp")
-    print(f"Directory '{path}' created or already exists.")
+    if verbose:
+        print(f"Directory '{path}' created or already exists.")
     return path
 
 def generate_other_files(base_folder):

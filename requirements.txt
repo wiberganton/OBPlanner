@@ -8,3 +8,5 @@ pyvista
 shapely
 rasterio
 opencv-python
+streamlit
+plotly

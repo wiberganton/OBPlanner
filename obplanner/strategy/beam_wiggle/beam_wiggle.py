@@ -43,12 +43,12 @@ def beam_wiggle(obp_elements, settings, bp):
 
 def concentring_rings(timed_points, settings, bp):
 
-    spot_size_um = settings["wiggle_spot_size_um"]
+    num_points = settings.get("num_points", 4)
     wiggle_dwell_time_ns = settings["wiggle_dwell_time_ns"]
     concentric_kwargs = {
         "num_rings": settings["num_rings"],
         "ring_spacing_um": settings["ring_spacing_um"],
-        "arc_spacing_um": spot_size_um / 2,
+        "num_points": num_points,
         "direction": settings["direction"]
     }
     pts_c, dts_c = overlay_pattern_on_timedpoints(

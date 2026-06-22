@@ -19,6 +19,8 @@ dependencies = [
     "rasterio",
     "scipy",
     "opencv-python",
+    "streamlit",
+    "plotly",
     "tqdm",
     "matplotlib",
     "pytest",

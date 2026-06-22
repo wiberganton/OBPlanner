@@ -93,8 +93,8 @@
         },
         "strategy": "SpotRandom",
         "power": 700,
-        "spot_size": 250,
-        "dwell_time": 500000,
+        "spot_size": [250, 250],
+        "dwell_time": [500000, 500000],
         "geometry": [0],
         "settings": {
           "wiggle_pattern": "concentric_rings",    
